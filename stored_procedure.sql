@@ -2,8 +2,9 @@ use pets;
 
 DELIMITER ;;
 
+DROP PROCEDURE IF EXISTS searchNotWatched;;
 CREATE PROCEDURE searchNotWatched (
-	currentUser INT,
+	currentUser int,
     _max tinyint unsigned
 )
 BEGIN
@@ -15,7 +16,6 @@ BEGIN
 		)
 	and userId != currentUser
     limit _max;
-END
+END;;
 
 DELIMITER ;
-

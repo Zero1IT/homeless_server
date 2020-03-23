@@ -36,11 +36,11 @@ class User extends Model {
                 type: DataTypes.BOOLEAN,
                 defaultValue: false,
             },
-            countNotWatchedLikes: {
-                type: DataTypes.SMALLINT,
+            permissionLevel: {
+                type: DataTypes.TINYINT,
                 defaultValue: 0,
                 allowNull: false,
-            },
+            }
         }, {
             sequelize,
             charset: "utf8",

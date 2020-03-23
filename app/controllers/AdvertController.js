@@ -1,19 +1,18 @@
 const advertService = require("../services/services").Advert;
+const helper = require("./XcHelper");
+const defaultAdvertsLimit = 20;
 
 class AdvertController {
 
     usersAdverts(req, resp) {
-        if (req.user && req.user.id) {
-            advertService.getAdvertsByUser(req.user.id).then(v => resp.json(v));
-        } else {
-            resp.status(400).send("Invalid request");
-        }
+        advertService.getAdvertsByUser(req.user.id).then(v => resp.json(v));
     }
 
     notWatchedAdverts(req, resp) {
-        let limit = req.params.limit || req.query.limit || 20;
-        advertService.advertsNotPresentInLikeDislikeByUser(req.user.id, limit)
-            .then(adverts => resp.json(adverts[0]));
+        let params = helper.ejectQueryParams(req, resp, "limit");
+        params.limit = params.limit ? params.limit : defaultAdvertsLimit;
+        advertService.advertsNotPresentInLikeDislikeByUser(req.user.id, params.limit)
+            .then(adverts => resp.json(adverts));
     }
 
     createAdvert(req, resp) {
@@ -37,7 +36,7 @@ class AdvertController {
     usersInterestedInAdvert(req, resp) {
         let id = req.params.id || req.query.id;
         if (id) {
-            advertService.likedUsers(id).then(v => resp.json(v));
+            advertService.likedUsers(id, req.user.id).then(v => resp.json(v));
         } else {
             resp.status(400).send("Url parameter 'id' not present");
         }

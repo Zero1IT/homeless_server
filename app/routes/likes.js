@@ -1,10 +1,14 @@
-const LikeController = require("../controllers/LikeController");
+const DislikeLikeController = require("../controllers/DislikeLikeController");
 const express = require("express");
 const router = express.Router();
-const controller = new LikeController();
+const controller = new DislikeLikeController();
 
-router.get("/(:user)?", controller.likeCount);
+router.get("/(:user)?", function (req, resp) {
+    controller.likeCount(req, resp).catch(() => resp.status(500));
+});
 
-router.put("/(:advertId)?", controller.sendLike);
+router.put("/(:advertId)?", function (req, resp) {
+    controller.sendLike(req, resp).catch(() => resp.status(500));
+});
 
 module.exports = router;

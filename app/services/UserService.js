@@ -4,6 +4,11 @@ const protect = require("../protect");
 // without validation :)
 class UserService {
 
+    searchFields = {
+        ID: "id",
+        EMAIL: "email",
+        PHONE: "phoneNumber",
+    };
     /**
      * Create and save user to database
      * @param userObj - user data object
@@ -33,13 +38,14 @@ class UserService {
     }
 
     /**
-     * Get user by given 'id', if 'id' is undefined return all users
-     * @param {Number?} id - user id
+     * Get user by given field and value if 'field' or 'value' are undefined return all users
+     * @param field - field name
+     * @param value - field value
      * @returns {Promise<any[]>|Promise<any | null>}
      */
-    get(id) {
-        if (id) {
-            return User.findOne({where: {id}});
+    get(field, value) {
+        if (value && field) {
+            return User.findOne({where: {[field]: value}});
         } else {
             return User.findAll();
         }

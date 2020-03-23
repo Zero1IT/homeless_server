@@ -1,16 +1,13 @@
 const UserService = require("./UserService");
 const AdvertService = require("./AdvertService");
-const LikeService = require("./LikeService");
-const DislikeService = require("./DislikeService");
+const DislikeLikeService = require("./DislikeLikeService");
 
 const User = new UserService();
 const Advert = new AdvertService();
-const Like = new LikeService();
-const Dislike = new DislikeService();
+const DislikeLike = new DislikeLikeService();
 
 module.exports = {
     User,
     Advert,
-    Like,
-    Dislike,
+    DislikeLike,
 };
