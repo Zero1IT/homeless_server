@@ -1,6 +1,6 @@
 /**
  * Returns configure object
- * @returns {{db_name: string, db_password: string, db_login: string, private_key: string, jws_alg: string, hash_salt: string}}
+ * @returns {{db_name: string, db_password: string, db_login: string, private_key: string, jws_alg: string, hash_salt: string, email: string, email_password: string}}
  */
 module.exports.getServerConfiguration = function () {
     try {

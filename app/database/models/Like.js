@@ -15,6 +15,16 @@ class Like extends Model {
                 allowNull: false,
             },
         }, {
+            indexes: [
+                {
+                    unique: false,
+                    fields: ["userId"]
+                },
+                {
+                    unique: false,
+                    fields: ["advertId"]
+                }
+            ],
             sequelize,
             charset: "utf8",
             timestamps: false,

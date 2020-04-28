@@ -18,11 +18,13 @@ class DislikeLikeController {
     }
 
     async likeDislikeCount(req, resp, isLike = true) {
-        let param = req.params.user || req.query.user;
-        let dl = isLike ?
-            await dislikeLikeService.countLikes(param)
-            : await dislikeLikeService.countDislikes(param);
-        resp.json(dl);
+        let params  = helper.ejectQueryParams(user);
+        if (params !== null) {
+            let dl = isLike ?
+                await dislikeLikeService.countLikes(params.user)
+                : await dislikeLikeService.countDislikes(params.user);
+            resp.json(dl);
+        }
     }
 
     async sendLike(req, resp) {

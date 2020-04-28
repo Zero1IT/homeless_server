@@ -26,11 +26,22 @@ class User extends Model {
                 type: DataTypes.STRING,
                 allowNull: false,
                 unique: true,
+                validate: {
+                    is: {
+                        args: /^\+\d+$/,
+                        msg: "is not valid phone number",
+                    }
+                },
             },
             email: {
                 type: DataTypes.STRING,
                 allowNull: false,
                 unique: true,
+                validate: {
+                    isEmail: {
+                        msg: "is not valid email address"
+                    }
+                },
             },
             emailIsConfirm: {
                 type: DataTypes.BOOLEAN,
@@ -40,7 +51,7 @@ class User extends Model {
                 type: DataTypes.TINYINT,
                 defaultValue: 0,
                 allowNull: false,
-            }
+            },
         }, {
             sequelize,
             charset: "utf8",

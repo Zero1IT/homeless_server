@@ -39,7 +39,7 @@ class UserService {
 
     /**
      * Get user by given field and value if 'field' or 'value' are undefined return all users
-     * @param field - field name
+     * @param field {String} - field name
      * @param value - field value
      * @returns {Promise<any[]>|Promise<any | null>}
      */

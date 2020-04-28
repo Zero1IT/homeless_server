@@ -1,6 +1,7 @@
 const advertService = require("../services/services").Advert;
 const helper = require("./XcHelper");
 const defaultAdvertsLimit = 20;
+const advertRequiredParams = ["title", "animalType"];
 
 class AdvertController {
 
@@ -15,52 +16,43 @@ class AdvertController {
             .then(adverts => resp.json(adverts));
     }
 
-    createAdvert(req, resp) {
-        if (Object.keys(req.body).length !== 0) {
+    async createAdvert(req, resp) {
+        if (helper.isBodyParamsExists(req, resp, advertRequiredParams)) {
             req.body.userId = req.user.id;
-            advertService.create(req.body).then(v => resp.json(v));
-        } else {
-            resp.status(400).send("Body is empty");
+            try {
+                let result = await advertService.create(req.body);
+                resp.json(result);
+            } catch (e) {
+                helper.sendError(resp, e);
+            }
         }
     }
 
     selectAdverts(req, resp) {
         let id = req.params.id || req.query.id;
-        if (id) {
-            advertService.get(id).then(v => resp.json(v));
-        } else {
-            resp.status(400).send("Url parameter 'id' not present");
-        }
+        advertService.get(id).then(v => resp.json(v));
     }
 
     usersInterestedInAdvert(req, resp) {
-        let id = req.params.id || req.query.id;
-        if (id) {
-            advertService.likedUsers(id, req.user.id).then(v => resp.json(v));
-        } else {
-            resp.status(400).send("Url parameter 'id' not present");
+        let params = helper.ejectQueryParams(req, resp, "id");
+        if (params) {
+            advertService.likedUsers(params.id, req.user.id).then(v => resp.json(v));
         }
     }
 
     updateAdvert(req, resp) {
-        let id = req.params.id || req.query.id;
-        if (id) {
-            if (Object.keys(req.body).length !== 0) {
-                advertService.update(id, req.body).then(v => resp.json(v));
-            } else {
-                resp.status(400).send("Body is empty");
+        let params = helper.ejectQueryParams(req, resp, "id");
+        if (params) {
+            if (helper.isBodyParamsExists(req, resp)) {
+                advertService.update(params.id, req.body).then(v => resp.json(v));
             }
-        } else {
-            resp.status(400).send("Url parameter 'id' not present");
         }
     }
 
     deleteAdvert(req, resp) {
-        let id = req.params.id || req.query.id;
-        if (id) {
-            advertService.delete(id).then(v => resp.json({deleted: v}));
-        } else {
-            resp.status(400).send("Url parameter 'id' not present");
+        let params = helper.ejectQueryParams(req, resp, "id");
+        if (params) {
+            advertService.delete(params.id).then(v => resp.json({deleted: v}));
         }
     }
 }

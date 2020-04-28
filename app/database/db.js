@@ -7,19 +7,27 @@ const User = require("./models/User").initializeModel(sequelize);
 const Advert = require("./models/Advert").initializeModel(sequelize);
 const Like = require("./models/Like").initializeModel(sequelize);
 const Dislike = require("./models/Dislike").initializeModel(sequelize);
+const Chat = require("./models/Chat").initializeModel(sequelize);
+const ChatMessage = require("./models/ChatMessage").initializeModel(sequelize);
+const Token = require("./models/TokenVerification").initializeModel(sequelize);
 
 User.hasMany(Advert);
 User.belongsToMany(Advert, {through: Like, as: {plural: "likeAdverts"}});
 Advert.belongsToMany(User, {through: Like, as: {plural: "likeUsers"}});
 User.belongsToMany(Advert, {through: Dislike, as: {plural: "dislikeAdverts"}});
 Advert.belongsToMany(User, {through: Dislike, as: {plural: "dislikeUsers"}});
+User.belongsToMany(Chat, {through: "UserChat", timestamps: false});
+Chat.belongsToMany(User, {through: "UserChat", timestamps: false});
+User.hasMany(ChatMessage);
+Chat.hasMany(ChatMessage);
+User.hasOne(Token);
 
 // do sync and test data inserting
 sequelize.sync({force: true}).then(async () => {
     require("../../w_tests").randomDataSet();
 });
 
-function checkDatabaseConnection() {
+async function checkDatabaseConnection() {
     sequelize.authenticate()
         .then(() => debug("Database is connected!"))
         .catch(e => debug("Error: " + e.message));
@@ -40,6 +48,9 @@ module.exports = {
     User,
     Like,
     Dislike,
+    Chat,
+    ChatMessage,
+    Token,
     checkDatabaseConnection,
     executeRawQuery
 };

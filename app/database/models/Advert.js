@@ -20,6 +20,12 @@ class Advert extends Model {
                 type: DataTypes.ENUM,
                 values: info.adverts.animalTypes,
                 allowNull: false,
+                validate: {
+                    isIn: {
+                        args: [info.adverts.animalTypes],
+                        msg: "is not valid animal type"
+                    }
+                },
             },
             likeCount: {
                 type: DataTypes.INTEGER,
@@ -34,6 +40,12 @@ class Advert extends Model {
                 allowNull: false,
             },
         }, {
+            indexes: [
+                {
+                    unique: false,
+                    fields: ["userId"]
+                }
+            ],
             sequelize,
             charset: "utf8",
             modelName: "advert",
