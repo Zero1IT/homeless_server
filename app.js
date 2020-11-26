@@ -48,7 +48,6 @@ app.use(function(err, req, resp) {
   resp.locals.error = req.app.get("env") === "development" ? err : {}; // for
   resp.status(err.status || 500);                                      // view
   //resp.render("error");                                              // !
-
   resp.sendStatus(err.status || 500);
 });
 

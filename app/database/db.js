@@ -1,5 +1,5 @@
 const {Sequelize} = require("sequelize");
-const debug = require("debug")("pethome:db - ");
+const debug = require("debug")("pethome:db -");
 const setup = require("../../bin/config").getServerConfiguration();
 const sequelize = new Sequelize(setup.db_name, setup.db_login, setup.db_password, {dialect: "mysql"});
 
@@ -22,14 +22,15 @@ User.hasMany(ChatMessage);
 Chat.hasMany(ChatMessage);
 User.hasOne(Token);
 
-// do sync and test data inserting
-sequelize.sync({force: true}).then(async () => {
-    require("../../w_tests").randomDataSet();
-});
-
-async function checkDatabaseConnection() {
+function checkDatabaseConnection() {
     sequelize.authenticate()
-        .then(() => debug("Database is connected!"))
+        .then(() => {
+            // do sync and test data inserting
+            sequelize.sync({force: true}).then(async () => {
+                require("../../w_tests").randomDataSet();
+            });
+            debug("Database is connected!");
+        })
         .catch(e => debug("Error: " + e.message));
 }
 

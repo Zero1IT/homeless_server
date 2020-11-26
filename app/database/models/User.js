@@ -5,8 +5,14 @@ const config = require("../../../bin/config").getServerConfiguration();
 class User extends Model {
 
     generateAuthToken() {
-        return jwt.sign({id: this.id},
-            config.private_key, {algorithm: config.jws_alg});
+        const payload = {
+            id: this.id,
+            email: this.email
+        };
+        return jwt.sign(payload, config.private_key, {
+            expiresIn: "24h",
+            algorithm: config.jws_alg
+        });
     }
 
     static initializeModel(sequelize) {

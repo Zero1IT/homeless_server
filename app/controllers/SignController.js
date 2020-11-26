@@ -1,3 +1,4 @@
+const ip = require("ip");
 const userService = require("../services/services").User;
 const Token = require("../database/db").Token;
 const helper = require("./XcHelper");
@@ -64,22 +65,26 @@ class SignController {
 }
 
 async function sendVerificationEmail(req, resp, user, callback) {
-    /*const token = await Token.create({userId: user.id, token: crypto.randomBytes(16).toString("hex")});
-    const transporter = nodemailer.createTransport(transportInfo);
-    const emailOptions = createEmailOptions(req, user.email, token.token);
-    transporter.sendMail(emailOptions, function (err) {
-        if (err) return resp.status(500).end("Email sending error: " + err.message);
+    if (req.app.get("env") !== "development") {
+        const token = await Token.create({userId: user.id, token: crypto.randomBytes(16).toString("hex")});
+        const transporter = nodemailer.createTransport(transportInfo);
+        const emailOptions = createEmailOptions(req, user.email, token.token);
+        transporter.sendMail(emailOptions, function (err) {
+            if (err) return resp.status(500).end("Email sending error: " + err.message);
+            callback();
+        });
+    } else {
         callback();
-    });*/
-    callback();
+    }
 }
 
 function createEmailOptions(req, toMail, token) {
+    const address = req.headers.host.includes("localhost") ? ip.address() : req.headers.host;
     return {
         from: config.email,
         to: toMail,
         subject: "HOMELESS email verification",
-        html: `<h2>Please click to verify: http://${req.headers.host}/verification/${token}</h2>`
+        html: `<h2>Please click to verify: http://${address}/verification/${token}</h2>`
     };
 }
 

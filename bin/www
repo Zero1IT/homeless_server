@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-const debug = require("debug")("pethome:www - ");
+const debug = require("debug")("pethome:www -");
 const db = require("../app/database/db");
 const app = require("../app");
 const http = require("http");

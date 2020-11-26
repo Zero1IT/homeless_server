@@ -1,8 +1,9 @@
 const jwt = require('jsonwebtoken');
 const config = require("../bin/config").getServerConfiguration();
 const bcrypt = require("bcrypt");
-const UserService = require("./services/UserService");
-const uService = new UserService();
+const debug = require("debug")("pethome:protect -");
+const service = require("./services/services");
+const uService = service.User;
 
 // TODO: future
 const PERMISSIONS = {
@@ -42,15 +43,19 @@ function authMiddleware(req, resp, next) {
 }
 
 async function emailMiddleware(req, resp, next) {
-    if (req.user) {
-        const user = await uService.get(uService.searchFields.ID, req.user.id);
-        if (!user.emailIsConfirm) {
-            resp.status(403).end("Email is not confirmed");
+    if (req.app.get("env") !== "development") {
+        if (req.user) {
+            const user = await uService.get(uService.searchFields.ID, req.user.id);
+            if (!user.emailIsConfirm) {
+                resp.status(403).end("Email is not confirmed");
+            } else {
+                next();
+            }
         } else {
-            next();
+            resp.status(401).end("Unauthorized");
         }
     } else {
-        resp.status(401).end("Unauthorized");
+        debug("Email is not checked! User id - " + req.user ? req.user.id : "No user");
     }
 }
 
